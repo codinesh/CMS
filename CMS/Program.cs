@@ -1,5 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+
+//https://pioneercode.com/post/dependency-injection-logging-and-configuration-in-a-dot-net-core-console-app
 
 namespace CMS
 {
@@ -30,6 +35,36 @@ namespace CMS
 
         static void Main(string[] args)
         {
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            // Run app
+            //serviceProvider.GetService().Run();
+        }
+
+        private static void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            // Add logging
+            serviceCollection.AddSingleton(new LoggerFactory()
+                .AddConsole()
+                .AddDebug());
+            serviceCollection.AddLogging();
+
+            // build configuration
+            var configuration = new ConfigurationBuilder()
+              .SetBasePath(AppContext.BaseDirectory)
+              .AddJsonFile("appsettings.json", false)
+              .Build();
+            serviceCollection.AddOptions();
+            serviceCollection.Configure<AppSettings>(configuration.GetSection("Configuration"));
+
+            // Get table storage connection string for serilog
+            //CloudStorageAccount logStorageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("LoggingStorage"));
+
+            serviceCollection.AddTransient<SchedulerService>();
+            // Add access to generic IConfigurationRoot
+            //serviceCollection.AddSingleton(configuration);
         }
     }
 }

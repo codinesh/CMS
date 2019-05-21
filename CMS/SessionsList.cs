@@ -4,6 +4,11 @@ using System.Text;
 
 namespace CMS
 {
+    public class AppSettings
+    {
+        public string Title { get; set; }
+    }
+
     public class Talk
     {
         public Talk(string title, int duration)

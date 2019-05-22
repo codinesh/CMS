@@ -21,17 +21,24 @@ namespace CMS
             this.config = config.Value;
         }
 
+        /// <summary>
+        /// Identifies and initializes the tracks.
+        /// </summary>
+        /// <param name="talks">
+        /// list of talks containing name and duration.
+        /// </param>
         public void Initialize(IList<Talk> talks)
         {
             var totalTalkDuration = talks.Sum(x => x.Duration.TotalMinutes);
             var maxDurationPerTrack = 420;
             var numberOfTracksRequired = Math.Ceiling(totalTalkDuration / maxDurationPerTrack);
             var tracks = InitializeTracks(numberOfTracksRequired);
-            //trackOrganizer.Organize(2, talks);
             trackOrganizer.Organize(tracks, talks);
+            var conference = new Conference() { Tracks = tracks, ConferenceStartDate = DateTime.Now.Date };
+
         }
 
-        public IList<Track> InitializeTracks(double numberOfTracks)
+        private IList<Track> InitializeTracks(double numberOfTracks)
         {
             logger.LogInformation("test");
             var tracks = new List<Track>();
@@ -41,9 +48,9 @@ namespace CMS
                 {
                     Sessions = new List<Slot>
                 {
-                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.MorningSession, Title = "Morning Session"   },
+                    new Session{ Duration = new TimeSpan(0, 180, 0), StartTime = new TimeSpan(9, 0,0),  SessionType = SessionType.MorningSession, Title = "Morning Session"   },
                     new LunchBreak(new TimeSpan(0, 60, 0), new TimeSpan(12, 0 ,0), "Afternoon Session"),
-                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.AfternoonSession, Title = "Afternoon Session"   },
+                    new Session{ Duration = new TimeSpan(0, 240, 0), StartTime = new TimeSpan(13,0,0), SessionType = SessionType.AfternoonSession, Title = "Afternoon Session"   },
                     new NetworkingEvent()
                 }
                 });

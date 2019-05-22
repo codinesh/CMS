@@ -33,18 +33,26 @@ namespace CMS
             foreach (var talk in talks.OrderByDescending(x => x.Duration))
             {
                 var bin = GetBestFit(bins, talk.Duration);
-                bin.AddTalk(talk);
+                if (bin != null)
+                {
+                    if (bin.Talks.Any())
+                    {
+                        var previousTalk = bin.Talks.Last();
+                        talk.StartTime = previousTalk.StartTime.Add(previousTalk.Duration);
+                    }
+                    else
+                    {
+                        talk.StartTime = bin.StartTime;
+                    }
+
+                    bin.AddTalk(talk);
+                }
             }
         }
 
         private Session GetBestFit(IEnumerable<Session> bins, TimeSpan duration)
         {
             return bins.FirstOrDefault(b => b.Duration.TotalMinutes - b.Talks.Sum(x => x.Duration.TotalMinutes) >=  duration.TotalMinutes);
-        }
-
-        private Track GetNextAvailableTrack(IEnumerable<Track> tracks, Talk talk)
-        {
-            return tracks.FirstOrDefault(x => x.RemainingUnallocatedTime() >= talk.Duration);
         }
     }
 }

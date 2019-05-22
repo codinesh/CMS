@@ -1,0 +1,12 @@
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\bin\Debug\netcoreapp2.1\CMS.Shared.deps.json
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\bin\Debug\netcoreapp2.1\CMS.Shared.dll
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\bin\Debug\netcoreapp2.1\CMS.Shared.pdb
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\bin\Debug\netcoreapp2.1\CMS.Model.dll
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\bin\Debug\netcoreapp2.1\CMS.Model.pdb
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.csprojAssemblyReference.cache
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.csproj.CoreCompileInputs.cache
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.AssemblyInfoInputs.cache
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.AssemblyInfo.cs
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.csproj.CopyComplete
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.dll
+C:\Users\diredd\source\repos\new\CMS\CMS.Interfaces\obj\Debug\netcoreapp2.1\CMS.Shared.pdb

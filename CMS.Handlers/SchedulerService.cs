@@ -14,24 +14,24 @@ namespace CMS
         private readonly ITrackOrganizer trackOrganizer;
         private readonly AppSettings config;
 
-        public SchedulerService(ILogger logger, IOptions<AppSettings> config, ITrackOrganizer trackOrganizer)
+        public SchedulerService(ILogger<SchedulerService> logger, IOptions<AppSettings> config, ITrackOrganizer trackOrganizer)
         {
             this.logger = logger;
             this.trackOrganizer = trackOrganizer;
             this.config = config.Value;
         }
 
-        public void Initialize(List<Talk> talks)
+        public void Initialize(IList<Talk> talks)
         {
             var totalTalkDuration = talks.Sum(x => x.Duration.TotalMinutes);
             var maxDurationPerTrack = 420;
             var numberOfTracksRequired = Math.Ceiling(totalTalkDuration / maxDurationPerTrack);
             var tracks = InitializeTracks(numberOfTracksRequired);
-            trackOrganizer.Organize(2, talks);
+            //trackOrganizer.Organize(2, talks);
             trackOrganizer.Organize(tracks, talks);
         }
 
-        public List<Track> InitializeTracks(double numberOfTracks)
+        public IList<Track> InitializeTracks(double numberOfTracks)
         {
             logger.LogInformation("test");
             var tracks = new List<Track>();
@@ -41,10 +41,10 @@ namespace CMS
                 {
                     Sessions = new List<Slot>
                 {
-                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.MorningSession, Talks = new List<Slot>(), Title = "Morning Session"   },
-                    new LunchBreak{ Duration = new TimeSpan(0, 180, 0), Title = "Afternoon Session"   },
-                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.AfternoonSession, Talks = new List<Slot>(), Title = "Afternoon Session"   },
-                    new NetworkingEvent{ Duration = new TimeSpan(0, 180, 0), Title = "Afternoon Session"   }
+                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.MorningSession, Title = "Morning Session"   },
+                    new LunchBreak(new TimeSpan(0, 60, 0), new TimeSpan(12, 0 ,0), "Afternoon Session"),
+                    new Session{ Duration = new TimeSpan(0, 180, 0), SessionType = SessionType.AfternoonSession, Title = "Afternoon Session"   },
+                    new NetworkingEvent()
                 }
                 });
             }

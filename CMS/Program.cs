@@ -39,8 +39,7 @@ namespace CMS
             ConfigureServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            // Run app
-            //serviceProvider.GetService().Run();
+            serviceProvider.GetService<SchedulerService>().Initialize(talks);
         }
 
         private static void ConfigureServices(IServiceCollection serviceCollection)

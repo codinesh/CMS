@@ -21,8 +21,10 @@ namespace CMS
             this.config = config.Value;
         }
 
+        public ConferenceDetail Conference { get; private set; }
+
         /// <summary>
-        /// Identifies and initializes the tracks.
+        /// Identifies the number of and initializes the tracks and schedules
         /// </summary>
         /// <param name="talks">
         /// list of talks containing name and duration.
@@ -34,8 +36,12 @@ namespace CMS
             var numberOfTracksRequired = Math.Ceiling(totalTalkDuration / maxDurationPerTrack);
             var tracks = InitializeTracks(numberOfTracksRequired);
             trackOrganizer.Organize(tracks, talks);
-            var conference = new Conference() { Tracks = tracks, ConferenceStartDate = DateTime.Now.Date };
+            Conference = new ConferenceDetail() { Tracks = tracks, ConferenceStartDate = DateTime.Now.Date };
+        }
 
+        public ConferenceDetail GetSchedule()
+        {
+            return Conference;
         }
 
         private IList<Track> InitializeTracks(double numberOfTracks)
@@ -49,7 +55,7 @@ namespace CMS
                     Sessions = new List<Slot>
                 {
                     new Session{ Duration = new TimeSpan(0, 180, 0), StartTime = new TimeSpan(9, 0,0),  SessionType = SessionType.MorningSession, Title = "Morning Session"   },
-                    new LunchBreak(new TimeSpan(0, 60, 0), new TimeSpan(12, 0 ,0), "Afternoon Session"),
+                    new LunchBreak(new TimeSpan(0, 60, 0), new TimeSpan(12, 0 ,0)),
                     new Session{ Duration = new TimeSpan(0, 240, 0), StartTime = new TimeSpan(13,0,0), SessionType = SessionType.AfternoonSession, Title = "Afternoon Session"   },
                     new NetworkingEvent()
                 }

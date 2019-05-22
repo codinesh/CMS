@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace CMS
 {
-    public class TrackOrganizer : ITrackOrganizer
+    public class BestFitTrackOrganizer : ITrackOrganizer
     {
         private readonly ILogger logger;
         private readonly IOptions<AppSettings> config;
         private readonly ITalkOrganizer talkOrganizer;
 
-        public TrackOrganizer(ILogger<TrackOrganizer> logger, IOptions<AppSettings> config)
+        public BestFitTrackOrganizer(ILogger<BestFitTrackOrganizer> logger, IOptions<AppSettings> config)
         {
             this.logger = logger;
             this.config = config;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CMS
 {
-    public class Conference
+    public class ConferenceDetail
     {
         public IEnumerable<Track> Tracks { get; set; }
 

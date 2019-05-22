@@ -9,5 +9,10 @@ namespace CMS
         public virtual TimeSpan StartTime { get; set; }
 
         public virtual TimeSpan Duration { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.StartTime} {this.Title}";
+        }
     }
 }

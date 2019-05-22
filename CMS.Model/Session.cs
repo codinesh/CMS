@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace CMS
 {
@@ -29,6 +30,17 @@ namespace CMS
         private TimeSpan RemainingUnallocatedTime()
         {
             return new TimeSpan(0, Convert.ToInt32(420 - Talks.Sum(x => x.Duration.TotalMinutes)), 0);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in Talks)
+            {
+                sb.AppendLine($"{item.StartTime} {item.Title}");
+            }
+
+            return sb.ToString();
         }
     }
 }

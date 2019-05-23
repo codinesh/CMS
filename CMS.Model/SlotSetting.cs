@@ -24,12 +24,16 @@ namespace CMS.Model
         /// </summary>
         public TimeSpan EndTime { get; set; }
 
-
+        /// <summary>
+        /// Gets or sets Default Networking Event Start Time to use.
+        /// </summary>
+        public TimeSpan DefaultNetworkingEventStartTime { get; set; }
+        
         public TimeSpan Duration => EndTime - StartTime;
 
         /// <summary>
         /// Gets a boolean value representing whether a slot can Have Talks.
         /// </summary>
-        public virtual bool CanHaveTalks { get; }
+        public bool CanHaveTalks { get; }
     }
 }

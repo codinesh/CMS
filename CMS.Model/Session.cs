@@ -27,13 +27,13 @@ namespace CMS.Model
         {
             this.Talks = new List<Slot>();
         }
-            
+
         /// <summary>
         /// Adds a talk object to the list of Talks at the end.
         /// </summary>
         /// <param name="talk">The Talk object to be added at the end of Talks list.</param>
         /// <returns>boolean value indicating sucecss or failure.</returns>
-        /// <exceptions>throws an exception if talk can't fit into the session.</exceptions>
+        /// <exceptions>throws an CanNotAddTalkException if talk can't fit into the session.</exceptions>
         public bool AddTalk(Talk talk)
         {
             var canAddTalk = RemainingUnallocatedTime() >= talk.Duration;
@@ -43,7 +43,7 @@ namespace CMS.Model
             }
             else
             {
-                throw new Exception("Can not add Talk, due to unavailable time.");
+                throw new CanNotAddTalkException("Can not add Talk, due to unavailable time.");
             }
 
             return canAddTalk;
@@ -66,9 +66,7 @@ namespace CMS.Model
 
         private TimeSpan RemainingUnallocatedTime()
         {
-            return new TimeSpan(0, Convert.ToInt32(420 - Talks.Sum(x => x.Duration.TotalMinutes)), 0);
+            return new TimeSpan(0, Convert.ToInt32(this.Duration.TotalMinutes - Talks.Sum(x => x.Duration.TotalMinutes)), 0);
         }
-
-       
     }
 }

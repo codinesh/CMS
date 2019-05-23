@@ -5,7 +5,6 @@ namespace CMS.Model
 {
     public class AppSettings
     {
-        public string Title { get; set; }
-        public DateTime Date { get; set; }
+        public string InputFileName { get; set; }
     }
 }

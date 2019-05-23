@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CMS.Model
 {
@@ -25,6 +26,14 @@ namespace CMS.Model
         {
             this.Name = name;
             this.Sessions.AddRange(slots);
+        }
+
+        public void SetNetworkingEventStartTime()
+        {
+            var afternoonSession = this.Sessions.OfType<Session>()?.LastOrDefault();
+            var lastTalk = afternoonSession.Talks?.LastOrDefault();
+            var networkingSession = this.Sessions.OfType<NetworkingEvent>()?.FirstOrDefault();
+            networkingSession.StartTime = lastTalk == null ? networkingSession.DefaultStartTime : lastTalk.StartTime.Add(lastTalk.Duration);
         }
     }
 }

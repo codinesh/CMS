@@ -5,7 +5,7 @@ namespace CMS.Core
 {
     public static class SlotFactory
     {
-        public static Slot GetSlot(string category, string title, TimeSpan startTime, TimeSpan duration)
+        public static Slot GetSlot(string category, string title, TimeSpan startTime, TimeSpan duration, TimeSpan defaultNetworkingEventStartTime)
         {
             if (string.IsNullOrWhiteSpace(category))
             {
@@ -24,13 +24,13 @@ namespace CMS.Core
                     createdSlot = new Session { Duration = duration, StartTime = startTime, Title = title };
                     break;
                 case "Lunch Break":
-                    createdSlot = new LunchBreak(new TimeSpan(0, 60, 0), startTime, title);                    
+                    createdSlot = new LunchBreak(duration, startTime, title);                    
                     break;
                 case "Networking Session":
-                    createdSlot = new NetworkingEvent(title);
+                    createdSlot = new NetworkingEvent(defaultNetworkingEventStartTime, title);
                     break;
                 default:
-                    throw new InvalidOperationException();
+                    throw new ArgumentException($"Argument {category} is not valid.");
             }
 
             return createdSlot;

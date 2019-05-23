@@ -82,7 +82,7 @@ namespace CMS.Core
             var slots = new List<Slot>();
             foreach (var item in config.Sessions)
             {
-                slots.Add(SlotFactory.GetSlot(item.Category, item.Title, item.StartTime, item.Duration));
+                slots.Add(SlotFactory.GetSlot(item.Category, item.Title, item.StartTime, item.Duration, item.DefaultNetworkingEventStartTime));
             }
 
             return new Track(trackName, slots);

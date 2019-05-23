@@ -1,13 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
-namespace CMS
+namespace CMS.Model
 {
+    /// <summary>
+    /// Represents a Track in a conference.
+    /// </summary>
     public class Track
     {
-        public string Name { get; set; }
+        /// <summary>
+        /// Gets or Sets Name of the Track.
+        /// </summary>
+        public string Name { get; private set; }
 
-        public IEnumerable<Slot> Sessions { get; set; }
+        /// <summary>
+        /// Gets sessions in a track.
+        /// </summary>
+        public List<Slot> Sessions { get; private set; } = new List<Slot>();
+
+        /// <summary>
+        /// Initializes a new instance of Track with given slots.
+        /// </summary>
+        /// <param name="slots">Slots to be added to the track.</param>
+        public Track(string name, IEnumerable<Slot> slots)
+        {
+            this.Name = name;
+            this.Sessions.AddRange(slots);
+        }
     }
 }

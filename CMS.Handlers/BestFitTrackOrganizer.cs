@@ -1,34 +1,38 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using CMS.Model;
+using CMS.Shared.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CMS
+namespace CMS.Core
 {
+    /// <summary>
+    /// Best Fit implemenattion of ITrackOrganizer to fill Talks in the Track.
+    /// This is one of the variation of Bin Packing algorithm.
+    /// </summary>
     public class BestFitTrackOrganizer : ITrackOrganizer
     {
         private readonly ILogger logger;
-        private readonly IOptions<AppSettings> config;
-        private readonly ITalkOrganizer talkOrganizer;
 
-        public BestFitTrackOrganizer(ILogger<BestFitTrackOrganizer> logger, IOptions<AppSettings> config)
+        /// <summary>
+        /// Initializes new instance of BestFitTrackOrganizer.
+        /// </summary>
+        /// <param name="logger">Logger to be used.</param>
+        /// <param name="config">configuration data to be used while scheduling the talks.</param>
+        public BestFitTrackOrganizer(ILogger<BestFitTrackOrganizer> logger)
         {
             this.logger = logger;
-            this.config = config;
-            //this.talkOrganizer = talkOrganizer;
         }
 
-        public void Organize(int v, IList<Talk> talks)
+        /// <summary>
+        /// Organizes the given talks into the tracks.
+        /// </summary>
+        /// <param name="tracks">Available tracks</param>
+        /// <param name="talks">talks to arrange in tracks.</param>
+        /// <returns>List of tracks with talks.</returns>           
+        public IEnumerable<Track> Organize(IList<Track> tracks, IList<Talk> talks)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Organize(IList<Track> tracks, IList<Talk> talks)
-        {
-            var grouppedBy = talks.GroupBy(x => x.Duration);
-
-
             var bins = tracks.SelectMany(x => x.Sessions.OfType<Session>());
             foreach (var talk in talks.OrderByDescending(x => x.Duration))
             {
@@ -48,6 +52,8 @@ namespace CMS
                     bin.AddTalk(talk);
                 }
             }
+
+            return tracks;
         }
 
         private Session GetBestFit(IEnumerable<Session> bins, TimeSpan duration)

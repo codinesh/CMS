@@ -1,4 +1,4 @@
-﻿namespace CMS
+﻿namespace CMS.Model
 {
     public enum SessionType
     {

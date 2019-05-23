@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CMS.Model;
+using System.Collections.Generic;
 
-namespace CMS
+namespace CMS.Shared.Interfaces
 {
     public interface ITrackOrganizer
     {
-        void Organize(int v, IList<Talk> talks);
-        void Organize(IList<Track> tracks, IList<Talk> talks);
+        IEnumerable<Track> Organize(IList<Track> tracks, IList<Talk> talks);
     }
 }

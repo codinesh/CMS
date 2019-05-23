@@ -1,20 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CMS.Core;
+using CMS.Model;
+using CMS.Shared.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace CMS
+namespace CMS.Core
 {
-    public class SchedulerService
+    public class SchedulerService : IScheduler
     {
         private readonly ILogger logger;
         private readonly ITrackOrganizer trackOrganizer;
-        private readonly AppSettings config;
+        private readonly ConferenceSettings config;
 
-        public SchedulerService(ILogger<SchedulerService> logger, IOptions<AppSettings> config, ITrackOrganizer trackOrganizer)
+        /// <summary>
+        /// Initializes new instance of SchedulerService with logger, configuration detail and 
+        /// the organizer defining the method to use while arranging talks in track.
+        /// </summary>
+        /// <param name="logger">Logger to be used.</param>
+        /// <param name="config">configuration data</param>
+        /// <param name="trackOrganizer">implemenation of ITrackOrganizer to be used</param>
+        public SchedulerService(ILogger<SchedulerService> logger, IOptions<ConferenceSettings> config, ITrackOrganizer trackOrganizer)
         {
             this.logger = logger;
             this.trackOrganizer = trackOrganizer;
@@ -23,46 +31,62 @@ namespace CMS
 
         public ConferenceDetail Conference { get; private set; }
 
+        #region public methods
+
         /// <summary>
         /// Identifies the number of and initializes the tracks and schedules
         /// </summary>
         /// <param name="talks">
         /// list of talks containing name and duration.
         /// </param>
-        public void Initialize(IList<Talk> talks)
+        /// <returns>return ConferenceDetail class with tracks scheduled with Talks.</returns>
+        public ConferenceDetail Initialize(IList<Talk> talks)
         {
-            var totalTalkDuration = talks.Sum(x => x.Duration.TotalMinutes);
-            var maxDurationPerTrack = 420;
-            var numberOfTracksRequired = Math.Ceiling(totalTalkDuration / maxDurationPerTrack);
-            var tracks = InitializeTracks(numberOfTracksRequired);
+            logger.LogInformation($"Start: {nameof(SchedulerService)} => {nameof(Initialize)} with {nameof(talks)}:{talks.Count}");
+
+            var tracks = InitializeTracks(GetNumberOfTracksRequired(talks));
             trackOrganizer.Organize(tracks, talks);
-            Conference = new ConferenceDetail() { Tracks = tracks, ConferenceStartDate = DateTime.Now.Date };
+            Conference = new ConferenceDetail() { Tracks = tracks, ConferenceStartDate = DateTime.Now };
+
+            logger.LogInformation($"Complete: {nameof(SchedulerService)} => {nameof(Initialize)} with {talks.Count} Talks.");
+            return Conference;
         }
 
-        public ConferenceDetail GetSchedule()
+        #endregion
+
+        #region private methods
+
+        private double GetNumberOfTracksRequired(IEnumerable<Talk> talks)
         {
-            return Conference;
+            var totalTalkDuration = talks.Sum(x => x.Duration.TotalMinutes);
+            return Math.Ceiling(totalTalkDuration / config.MaxDurationPerTrack);
         }
 
         private IList<Track> InitializeTracks(double numberOfTracks)
         {
-            logger.LogInformation("test");
+            logger.LogInformation($"Start: {nameof(SchedulerService)} => {nameof(InitializeTracks)} with {nameof(numberOfTracks)}:{numberOfTracks} .");
+
             var tracks = new List<Track>();
-            for (int i = 0; i < numberOfTracks; i++)
+            var trackNameFormat = config.TrackNameFormat;
+            for (int i = 1; i <= numberOfTracks; i++)
             {
-                tracks.Add(new Track
-                {
-                    Sessions = new List<Slot>
-                {
-                    new Session{ Duration = new TimeSpan(0, 180, 0), StartTime = new TimeSpan(9, 0,0),  SessionType = SessionType.MorningSession, Title = "Morning Session"   },
-                    new LunchBreak(new TimeSpan(0, 60, 0), new TimeSpan(12, 0 ,0)),
-                    new Session{ Duration = new TimeSpan(0, 240, 0), StartTime = new TimeSpan(13,0,0), SessionType = SessionType.AfternoonSession, Title = "Afternoon Session"   },
-                    new NetworkingEvent()
-                }
-                });
+                tracks.Add(CreateTrack(string.Format(trackNameFormat, i)));
             }
 
+            logger.LogInformation($"Complete: {nameof(SchedulerService)} => {nameof(InitializeTracks)} with {numberOfTracks} Talks.");
             return tracks;
         }
+
+        private Track CreateTrack(string trackName)
+        {
+            var slots = new List<Slot>();
+            foreach (var item in config.Sessions)
+            {
+                slots.Add(SlotFactory.GetSlot(item.Category, item.Title, item.StartTime, item.Duration));
+            }
+
+            return new Track(trackName, slots);
+        }
+        #endregion
     }
 }

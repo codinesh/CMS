@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CMS.Core;
+using CMS.Model;
+using CMS.Shared.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 //https://pioneercode.com/post/dependency-injection-logging-and-configuration-in-a-dot-net-core-console-app
 
@@ -40,21 +42,19 @@ namespace CMS
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
             var schedulerService = serviceProvider.GetService<SchedulerService>();
-            schedulerService.Initialize(talks);
-            var conference = schedulerService.GetSchedule();
-
-            DisplaySchedule(conference.Tracks);
+            var conference = schedulerService.Initialize(talks);
+            DisplaySchedule(conference);
         }
 
-        private static void DisplaySchedule(IEnumerable<Track> tracks)
+        private static void DisplaySchedule(ConferenceDetail conference)
         {
-            foreach (var track in tracks)
+            Console.WriteLine(conference.ConferenceStartDate);
+            foreach (var track in conference.Tracks)
             {
-                Console.WriteLine("---------------------------------------------");
-                Console.WriteLine(track.Name);
-
+                Console.WriteLine($"{track.Name}:");
                 foreach (var talk in track.Sessions)
                 {
+                    Console.WriteLine(talk.Title);
                     Console.WriteLine(talk.ToString());
                 }
             }
@@ -75,6 +75,7 @@ namespace CMS
               .Build();
             serviceCollection.AddOptions();
             serviceCollection.Configure<AppSettings>(configuration.GetSection("Configuration"));
+            serviceCollection.Configure<ConferenceSettings>(configuration.GetSection("ConferenceSettings"));
 
             // Get table storage connection string for serilog
             //CloudStorageAccount logStorageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("LoggingStorage"));
@@ -83,4 +84,6 @@ namespace CMS
             serviceCollection.AddTransient<ITrackOrganizer, BestFitTrackOrganizer>();
         }
     }
+
+
 }

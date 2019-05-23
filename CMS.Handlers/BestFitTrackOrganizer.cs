@@ -1,4 +1,5 @@
 ﻿using CMS.Model;
+using CMS.Model.Exceptions;
 using CMS.Shared.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;

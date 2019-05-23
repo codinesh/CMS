@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CMS.Model
+namespace CMS.Model.Exceptions
 {
     public class CanNotAddTalkException : Exception
     {
